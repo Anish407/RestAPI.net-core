@@ -62,16 +62,16 @@ namespace CourseLibrary.API.Controllers
                 MainCategory = model.MainCategory
             };
 
+            // also contains method to add collection of courses for the author
             await _courseLibraryRepository.AddAuthorAsync(newAuthor);
             _courseLibraryRepository.Save();
 
             // Map to return type DTO
-            var authorDto = new AuthorDTO
+            var authorDto = new AuthorDto
             {
                 Id = newAuthor.Id,
-                FirstName = newAuthor.FirstName,
-                LastName = newAuthor.LastName,
-                DOB = newAuthor.DateOfBirth,
+                Name=$"{newAuthor.FirstName} {newAuthor.LastName}",
+                Age = DateTime.Now.Year - newAuthor.DateOfBirth.Year,
                 MainCategory = newAuthor.MainCategory
             };
 
