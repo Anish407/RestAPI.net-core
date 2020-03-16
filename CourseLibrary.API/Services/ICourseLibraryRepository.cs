@@ -1,6 +1,7 @@
 ﻿using CourseLibrary.API.Entities;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CourseLibrary.API.Services
 {
@@ -15,7 +16,7 @@ namespace CourseLibrary.API.Services
         Author GetAuthor(Guid authorId);
         IEnumerable<Author> GetAuthors(string mainCategory,string searchQuery);
         IEnumerable<Author> GetAuthors(IEnumerable<Guid> authorIds);
-        void AddAuthor(Author author);
+        Task AddAuthorAsync(Author author);
         void DeleteAuthor(Author author);
         void UpdateAuthor(Author author);
         bool AuthorExists(Guid authorId);

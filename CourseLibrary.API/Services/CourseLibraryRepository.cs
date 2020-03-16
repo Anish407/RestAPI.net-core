@@ -3,6 +3,7 @@ using CourseLibrary.API.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CourseLibrary.API.Services
 {
@@ -69,7 +70,7 @@ namespace CourseLibrary.API.Services
             // no code in this implementation
         }
 
-        public void AddAuthor(Author author)
+        public async Task AddAuthorAsync(Author author)
         {
             if (author == null)
             {
@@ -84,7 +85,7 @@ namespace CourseLibrary.API.Services
                 course.Id = Guid.NewGuid();
             }
 
-            _context.Authors.Add(author);
+           await  _context.Authors.AddAsync(author);
         }
 
         public bool AuthorExists(Guid authorId)

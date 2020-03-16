@@ -1,4 +1,5 @@
-﻿using CourseLibrary.API.Services;
+﻿using CourseLibrary.API.Models;
+using CourseLibrary.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -21,17 +22,19 @@ namespace CourseLibrary.API.Controllers
 
 
         [HttpGet()]
+        // if the search and filter are empty then we return all the results else 
+        // we convert the query to an IQueryable and return the filtered results
         [HttpHead]
         // to check if the endpoint is accessible
         // we just need to add this to any endpoint and when we call it 
         // the code inside will get executed but the response body will be null.
-        public IActionResult GetAuthors(string mainCategory)
+        public IActionResult GetAuthors(string mainCategory, string searchQuery)
         {
-            var authorsFromRepo = _courseLibraryRepository.GetAuthors(mainCategory);
+            var authorsFromRepo = _courseLibraryRepository.GetAuthors(mainCategory, searchQuery);
             return Ok(authorsFromRepo);
         }
 
-        [HttpGet("{authorId}")]
+        [HttpGet("{authorId}", Name = "GetAuthor")]
         public IActionResult GetAuthor(Guid authorId)
         {
             var authorFromRepo = _courseLibraryRepository.GetAuthor(authorId);
@@ -40,8 +43,46 @@ namespace CourseLibrary.API.Controllers
             {
                 return NotFound();
             }
-             
+
             return Ok(authorFromRepo);
+        }
+
+        [HttpPost]
+        //we need to create a separate model for this endpoint, as it doesnt need an 
+        //id field in its input. So if there are other fields that wont be sent then
+        // create a model that has only the properties that will be sent to this endpoint
+        public async Task<IActionResult> CreateAuthor([FromBody]CreateAuthorDTO model)
+        {
+            //convert to entity
+            var newAuthor = new Entities.Author
+            {
+                DateOfBirth = model.DOB,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                MainCategory = model.MainCategory
+            };
+
+            await _courseLibraryRepository.AddAuthorAsync(newAuthor);
+            _courseLibraryRepository.Save();
+
+            // Map to return type DTO
+            var authorDto = new AuthorDTO
+            {
+                Id = newAuthor.Id,
+                FirstName = newAuthor.FirstName,
+                LastName = newAuthor.LastName,
+                DOB = newAuthor.DateOfBirth,
+                MainCategory = newAuthor.MainCategory
+            };
+
+            // route name is the name of the route that will return details for the 
+            //newly created author ()
+            //routeValues: we need to create an object with the same arg names as the 
+            // route args for GetAuthor
+            // value: will be the newly created author object
+            return CreatedAtRoute(routeName:"GetAuthor",
+                routeValues: new { authorId = authorDto.Id }, 
+                value:authorDto);
         }
     }
 }
