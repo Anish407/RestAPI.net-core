@@ -25,9 +25,9 @@ namespace CourseLibrary.API.Controllers
         // to check if the endpoint is accessible
         // we just need to add this to any endpoint and when we call it 
         // the code inside will get executed but the response body will be null.
-        public IActionResult GetAuthors()
+        public IActionResult GetAuthors(string mainCategory)
         {
-            var authorsFromRepo = _courseLibraryRepository.GetAuthors();
+            var authorsFromRepo = _courseLibraryRepository.GetAuthors(mainCategory);
             return Ok(authorsFromRepo);
         }
 
