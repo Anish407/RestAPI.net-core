@@ -80,6 +80,9 @@ namespace CourseLibrary.API.Controllers
             //routeValues: we need to create an object with the same arg names as the 
             // route args for GetAuthor
             // value: will be the newly created author object
+
+            // this will return the author.. to get its corresponding courses
+            // append /Courses to the route
             return CreatedAtRoute(routeName:"GetAuthor",
                 routeValues: new { authorId = authorDto.Id }, 
                 value:authorDto);
